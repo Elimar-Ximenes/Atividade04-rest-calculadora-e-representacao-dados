@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora REST</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Calculadora REST Client</h1>
+
+    <div class="input-group">
+        <label>Operador 1:</label>
+        <input type="number" id="op1" placeholder="Digite um número">
+    </div>
+
+    <div class="input-group">
+        <label>Operador 2:</label>
+        <input type="number" id="op2" placeholder="Digite outro número">
+    </div>
+
+    <div class="input-group">
+        <label>Operação:</label>
+        <select id="operacoes"></select>
+    </div>
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div class="resultado">
+        <label>Resultado:</label>
+        <span id="resultado-texto">---</span>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
