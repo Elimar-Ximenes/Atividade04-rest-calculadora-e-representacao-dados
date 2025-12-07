@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Leitor de Protobuf - Countries</title>
+    <script src="https://cdn.jsdelivr.net/npm/protobufjs/dist/protobuf.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Leitor de Countries em Protobuf</h2>
+
+<button onclick="loadProtobuf()">🔄 Carregar /countries?format=protobuf</button>
+
+<h3>Resultado:</h3>
+<pre id="output">Clique no botão para carregar.</pre>
+
+<script>
+async function loadProtobuf() {
+    const output = document.getElementById("output");
+    output.textContent = "Carregando...";
+
+    try {
+        // 1) Carregar o .proto
+        const root = await protobuf.load("proto/countries.proto");
+        const CountryList = root.lookupType("CountryList");
+
+        // 2) Requisitar o protobuf binário
+        const response = await fetch("http://127.0.0.1:8000/countries?format=protobuf");
+
+        const buffer = await response.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+
+        // 3) Decodificar o protobuf
+        const decoded = CountryList.decode(bytes);
+
+        // 4) Converter para JSON legível
+        const json = CountryList.toObject(decoded, {
+            longs: String,
+            enums: String,
+            bytes: String,
+        });
+
+        output.textContent = JSON.stringify(json, null, 2);
+
+    } catch (err) {
+        output.textContent = "Erro: " + err;
+    }
+}
+</script>
+
+</body>
+</html>

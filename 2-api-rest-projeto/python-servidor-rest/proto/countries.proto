@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message Country {
+  string name = 1;
+  string code = 2;
+  string region = 3;
+  string flag = 4;
+}
+
+message CountryList {
+  repeated Country countries = 1;
+}
