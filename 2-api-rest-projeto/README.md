@@ -25,11 +25,43 @@ Este projeto implementa uma API REST de Países usando FastAPI, além de dois cl
 
 ### Como executar
 
-`cd python-servidor-rest`
+#### Instalar dependências
+
+Execute antes do servidor:
+
+`cd 2-api-rest-projeto/python-servidor-rest`
 
 `pip install -r requirements.txt`
 
+### Modo 1 — Executar via localhost (usando navegador/Expo Web)
+
+Entre no arquivo **api.ts** no caminho abaixo:
+
+`cliente-mobile/src/config/api.ts`
+
+**Editar BASE_URL:**
+
+`export const BASE_URL = "http://localhost:8000";`
+
+**Execute Servidor FastAPI:**
+
 `uvicorn main:app --reload`
+
+### Modo 2 — Executar no celular real usando Expo Go (via IP da rede)
+
+Entre no arquivo **api.ts** no caminho abaixo:
+
+`cliente-mobile/src/config/api.ts`
+
+**Editar BASE_URL:**
+
+E coloque o IP local do seu computador (ex.: 192.168.1.3):
+
+`export const BASE_URL = "http://seu-ip:8000";`
+
+**Execute Servidor FastAPI:**
+
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ## 2. Cliente Web (HTML/CSS/JS)
 
