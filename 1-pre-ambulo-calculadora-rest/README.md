@@ -11,6 +11,7 @@ Cliente desenvolvido com HTML, CSS e JavaScript, funcionando diretamente no nave
 Você também pode acessar a interface web hospedada no GitHub Pages pelo link abaixo:
 
 👉 https://elimar-ximenes.github.io/calculadora-api-atv04-sd/
+> **Observação**: No primeiro acesso, a interface web pode demorar alguns segundos para carregar as operações porque a API hospedada no Render entra em modo de hibernação após um período de inatividade.
 
 Imagens das interface dos Clientes:
 

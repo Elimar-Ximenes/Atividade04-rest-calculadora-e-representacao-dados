@@ -5,24 +5,38 @@ window.onload = function () {
 };
 
 // ====================== GET /operations ======================
-async function carregarOperacoes() {
+async function carregarOperacoes(tentativa = 1) {
+    const MAX_TENTATIVAS = 10;
+
     try {
         const response = await fetch(BASE_URL + "/operations");
+
+        if (!response.ok) throw new Error("Servidor ainda inicializando");
+
         const data = await response.json();
 
         const combo = document.getElementById("operacoes");
         combo.innerHTML = "";
 
-        // data.operations é uma lista de objetos
         data.operations.forEach(op => {
             const option = document.createElement("option");
-            option.value = op.name.toLowerCase(); 
+            option.value = op.name.toLowerCase();
             option.textContent = op.name;
             combo.appendChild(option);
         });
 
+        console.log("Operações carregadas com sucesso!");
+        
     } catch (e) {
-        alert("Erro ao carregar operações: " + e.message);
+
+        console.log(`Tentativa ${tentativa}: servidor dormindo...`);
+
+        if (tentativa < MAX_TENTATIVAS) {
+            // Tenta de novo em 3 segundos
+            setTimeout(() => carregarOperacoes(tentativa + 1), 3000);
+        } else {
+            alert("Erro ao carregar operações: Servidor indisponível no momento.");
+        }
     }
 }
 
