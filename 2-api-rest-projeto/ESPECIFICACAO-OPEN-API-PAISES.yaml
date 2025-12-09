@@ -1,0 +1,374 @@
+openapi: 3.0.4
+
+servers:
+  - description: Country REST API (Local)
+    url: http://127.0.0.1:8000
+
+info:
+  version: "1.0.0"
+  title: country-rest
+  description: API para favoritos, votos e listagem de países em JSON, XML e Protocol Buffers.
+
+tags:
+  - name: Favorites
+    description: Operações relacionadas aos países favoritos
+  - name: Votes
+    description: Sistema de votação dos países
+  - name: Countries
+    description: Listagem de países em JSON, XML e Protocol Buffers
+
+paths:
+
+  # ============================================================
+  # FAVORITOS
+  # ============================================================
+  /favorites:
+    get:
+      tags: [Favorites]
+      description: Retorna todos os países favoritos.
+      parameters:
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        '200':
+          description: Lista de favoritos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoritesResponse'
+            application/xml:
+              schema:
+                type: string
+
+    post:
+      tags: [Favorites]
+      description: Adiciona um país à lista de favoritos.
+      parameters:
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteRequest'
+      responses:
+        '200':
+          description: País adicionado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddFavoriteResponse'
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Código inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/xml:
+              schema:
+                type: string
+        '409':
+          description: País já está nos favoritos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/xml:
+              schema:
+                type: string
+
+  /favorites/{code}:
+    put:
+      tags: [Favorites]
+      description: Atualiza o comentário de um país favorito.
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFavoriteRequest'
+      responses:
+        '200':
+          description: Favorito atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateFavoriteResponse'
+            application/xml:
+              schema:
+                type: string
+        '404':
+          description: País não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/xml:
+              schema:
+                type: string
+
+    delete:
+      tags: [Favorites]
+      description: Remove um país dos favoritos.
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        '200':
+          description: País removido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteFavoriteResponse'
+            application/xml:
+              schema:
+                type: string
+        '404':
+          description: País não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/xml:
+              schema:
+                type: string
+
+  # ============================================================
+  # VOTAÇÃO
+  # ============================================================
+  /votes/{code}:
+    post:
+      tags: [Votes]
+      description: Registra um voto para o país informado.
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        '200':
+          description: Voto registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoteResponse'
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Código inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/xml:
+              schema:
+                type: string
+
+  /votes/ranking:
+    get:
+      tags: [Votes]
+      description: Retorna o ranking de países mais votados.
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        '200':
+          description: Ranking retornado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoteRankingResponse'
+            application/xml:
+              schema:
+                type: string
+
+  # ============================================================
+  # COUNTRIES (JSON, XML, PROTOBUF)
+  # ============================================================
+  /countries:
+    get:
+      tags: [Countries]
+      description: Retorna todos os países em JSON, XML ou Protocol Buffer.
+      parameters:
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [json, xml, protobuf]
+            default: json
+      responses:
+        '200':
+          description: Lista de países
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountriesResponse'
+            application/xml:
+              schema:
+                type: string
+            application/x-protobuf:
+              schema:
+                type: string
+                format: binary
+
+# ============================================================
+# COMPONENTES
+# ============================================================
+components:
+  schemas:
+
+    FavoriteBase:
+      type: object
+      properties:
+        name: { type: string }
+        code: { type: string }
+        region: { type: string }
+        flag: { type: string }
+
+    FavoriteEntry:
+      allOf:
+        - $ref: '#/components/schemas/FavoriteBase'
+        - type: object
+          properties:
+            comment:
+              type: string
+              nullable: true
+
+    FavoritesResponse:
+      type: object
+      properties:
+        favorites:
+          type: array
+          items:
+            $ref: '#/components/schemas/FavoriteEntry'
+
+    FavoriteRequest:
+      type: object
+      required: [code]
+      properties:
+        code: { type: string }
+        comment:
+          type: string
+          nullable: true
+
+    AddFavoriteResponse:
+      type: object
+      properties:
+        message: { type: string }
+        favorites:
+          type: array
+          items:
+            $ref: '#/components/schemas/FavoriteEntry'
+
+    UpdateFavoriteRequest:
+      type: object
+      properties:
+        comment:
+          type: string
+          nullable: true
+
+    UpdateFavoriteResponse:
+      type: object
+      properties:
+        message: { type: string }
+        favorite:
+          $ref: '#/components/schemas/FavoriteEntry'
+
+    DeleteFavoriteResponse:
+      type: object
+      properties:
+        message: { type: string }
+        favorites:
+          type: array
+          items:
+            $ref: '#/components/schemas/FavoriteEntry'
+
+    VoteEntry:
+      type: object
+      properties:
+        name: { type: string }
+        code: { type: string }
+        region: { type: string }
+        flag: { type: string }
+        votes: { type: integer }
+
+    VoteResponse:
+      type: object
+      properties:
+        message: { type: string }
+        country:
+          $ref: '#/components/schemas/VoteEntry'
+
+    VoteRankingResponse:
+      type: object
+      properties:
+        ranking:
+          type: array
+          items:
+            $ref: '#/components/schemas/VoteEntry'
+
+    CountriesResponse:
+      type: object
+      properties:
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/FavoriteBase'
+
+    ErrorResponse:
+      type: object
+      properties:
+        error: { type: string }
