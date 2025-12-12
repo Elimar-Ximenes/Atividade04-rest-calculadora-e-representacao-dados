@@ -33,33 +33,13 @@ Execute antes do servidor:
 
 `pip install -r requirements.txt`
 
+**Como Executar Servidor FastAPI:**
+
 ### Modo 1 — Executar via localhost (usando navegador/Expo Web)
-
-Entre no arquivo **api.ts** no caminho abaixo:
-
-`cliente-mobile/src/config/api.ts`
-
-**Editar BASE_URL:**
-
-`export const BASE_URL = "http://localhost:8000";`
-
-**Execute Servidor FastAPI:**
 
 `uvicorn main:app --reload`
 
-### Modo 2 — Executar no celular real usando Expo Go (via IP da rede)
-
-Entre no arquivo **api.ts** no caminho abaixo:
-
-`cliente-mobile/src/config/api.ts`
-
-**Editar BASE_URL:**
-
-E coloque o IP local do seu computador (ex.: 192.168.1.3):
-
-`export const BASE_URL = "http://seu-ip:8000";`
-
-**Execute Servidor FastAPI:**
+### Modo 2 — Acessível na rede local (Necessário para telefone ou outro PC)
 
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
@@ -81,13 +61,25 @@ Abra no navegador:
 
 Aplicativo mobile com as mesmas funcionalidades do cliente web.
 
-### Como executar
+### Acesse a pasta raiz e instale dependências
 
 `cd cliente-mobile`
  
  `npm install`
  
  `npx expo start`
+
+ #### Entre no arquivo **api.ts** no caminho abaixo:
+
+`cliente-mobile/src/config/api.ts`
+
+**Para usar no navegador do PC ou Expo Web**
+
+`export const BASE_URL = "http://localhost:8000";`
+
+**Para usar no celular real ou via Expo Go**
+
+`export const BASE_URL = "http://seu-ip:8000";`
 
 ### Imagem da interface mobile
 
